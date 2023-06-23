@@ -6,6 +6,10 @@ import Login from "../container/Login";
 import Register from "../container/Register";
 import Basket from "../container/Basket";
 import { Checkout } from "../container/Checkout";
+import CreateProduct from "../components/CreateProduct";
+import DeleteProduct from "../components/deleteProduct";
+import Orders from "../components/Orders";
+import EditProduct from "../components/EditProduct";
 
 const router = createBrowserRouter([
   {
@@ -21,8 +25,26 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "/Dashboard",
+    path: "/dashboard",
     element: <Admin />,
+    children: [
+      {
+        path: "create",
+        element: <CreateProduct />,
+      },
+      {
+        path: "delete",
+        element: <DeleteProduct />,
+      },
+      {
+        path: "edit",
+        element: <EditProduct />,
+      },
+      {
+        path: "orders",
+        element: <Orders />,
+      },
+    ],
   },
   {
     path: "/basket",

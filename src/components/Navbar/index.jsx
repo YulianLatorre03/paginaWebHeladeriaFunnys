@@ -7,16 +7,23 @@ import { useEffect, useState } from "react";
 const Navbar = () => {
   const [userDetails, setUserDetails] = useRecoilState(userDetailsState);
   const [quantityProducts, setQuantityProducts] = useState(0);
+  const [imgAvatar, setAvatar] = useState();
   const products = useRecoilValue(productsState);
-
+  const getImgAvatar = async () => {
+    const avatar = await getAvatar();
+    setAvatar(avatar);
+  };
   useEffect(() => {
     setQuantityProducts(products.length);
+    getImgAvatar();
   }, [products.length]);
   const loggout = () => {
     setUserDetails(null);
     LogOutSession();
+    sessionStorage.removeItem("userDetails");
+    setTimeout(() => (window.location.href = "/"), 1000);
   };
-  console.log("products", products.length);
+
   return (
     <nav className="navbar fixed-top navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -54,7 +61,7 @@ const Navbar = () => {
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a href="login" className="btn btn-outline-success m-1">
+                  <a href="/login" className="btn btn-outline-success m-1">
                     Login
                   </a>
                 </li>
@@ -76,9 +83,15 @@ const Navbar = () => {
             {userDetails && (
               <>
                 <li className="nav-item">
-                  <h2 className="btn btn-secondary m-1">
-                    <img src={getAvatar()} /> {userDetails.name}
-                  </h2>
+                  <a
+                    href={userDetails.name === "admin" ? "/dashboard" : "#"}
+                    className="btn btn-secondary m-1"
+                  >
+                    {imgAvatar && (
+                      <img width={15} height={15} src={imgAvatar} />
+                    )}{" "}
+                    {userDetails.name}
+                  </a>
                 </li>
                 <li className="nav-item">
                   <h1 className="btn btn-danger m-1" onClick={() => loggout()}>

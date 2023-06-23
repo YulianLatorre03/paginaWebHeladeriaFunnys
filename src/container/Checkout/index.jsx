@@ -21,21 +21,20 @@ export const Checkout = () => {
     event.preventDefault();
     event.stopPropagation();
     product.forEach(async (product) => {
-      const data = {
+      const response = await crearPredido({
         ...form,
         productName: product.name,
         price: product.price,
         description: product.description,
         quantity: product.quantity,
-      };
-      const response = await crearPredido(data);
-      if (response.$id) {
+      });
+      if (!response.message) {
         setssucces("Registro exitoso");
+        setTimeout(() => {
+          navigate("/", { replace: false });
+        }, 3000);
       }
       setError(response.message);
-      if (success) {
-        navigate("/", { replace: false });
-      }
     });
   };
 
@@ -166,6 +165,17 @@ export const Checkout = () => {
             </div>
           </div>
         </div>
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="alert alert-success" role="alert">
+            {success}
+          </div>
+        )}
         <button type="submit" className="btn btn-primary btn-lg">
           enviar
         </button>
@@ -173,18 +183,6 @@ export const Checkout = () => {
           seguir comprando
         </a>
       </div>
-
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="alert alert-success" role="alert">
-          {success}
-        </div>
-      )}
     </form>
   );
 };

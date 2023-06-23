@@ -1,7 +1,15 @@
 /* eslint-disable no-unused-vars */
 // Create a new file under lib/appwrite.js
 
-import { Client, Account, ID, Storage, Databases, Avatars } from "appwrite";
+import {
+  Client,
+  Account,
+  ID,
+  Storage,
+  Databases,
+  Avatars,
+  Query,
+} from "appwrite";
 
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
@@ -66,18 +74,78 @@ export const getImages = async () => {
   }
 };
 
-export const getInformation = async () => {
+export const getOneImage = async (id) => {
   try {
-    const response = await databases.listDocuments(
-      "6472b9be26f13a8cc040",
-      "6472b9e9bd1684389eb6"
-    );
+    const response = await storage.getFilePreview("6472ba73b2685d1a2a36", id);
     return response;
   } catch (error) {
     console.log(error);
   }
 };
 
+export const deleteImage = async (id) => {
+  try {
+    const response = await storage.deleteFile("6472ba73b2685d1a2a36", id);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createImage = async (file) => {
+  try {
+    const upload = await storage.createFile(
+      "6472ba73b2685d1a2a36",
+      ID.unique(),
+      file
+    );
+    return upload;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getInformation = async () => {
+  try {
+    const response = await databases.listDocuments(
+      "6472b9be26f13a8cc040",
+      "6472b9e9bd1684389eb6",
+      [Query.limit(100)]
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const createProduct = async (data) => {
+  const response = await databases.createDocument(
+    "6472b9be26f13a8cc040",
+    "6472b9e9bd1684389eb6",
+    ID.unique(),
+    {
+      name: data.name,
+      price: data.price,
+      image: data.image,
+      description: data.description,
+    }
+  );
+  return response;
+};
+
+export const updateProduct = async (data, id) => {
+  const response = await databases.updateDocument(
+    "6472b9be26f13a8cc040",
+    "6472b9e9bd1684389eb6",
+    id,
+    {
+      name: data.name,
+      price: data.price,
+      image: data.image,
+      description: data.description,
+    }
+  );
+  return response;
+};
 export const crearPredido = async (data) => {
   try {
     const response = await databases.createDocument(
@@ -95,6 +163,33 @@ export const crearPredido = async (data) => {
         description: data.description,
       }
     );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    const response = await databases.deleteDocument(
+      "6472b9be26f13a8cc040",
+      "6472b9e9bd1684389eb6",
+      id
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getOrdersData = async () => {
+  try {
+    const response = await databases.listDocuments(
+      "6472b9be26f13a8cc040",
+      "64890278abbf5478f6ed",
+      [Query.limit(100)]
+    );
+
     return response;
   } catch (error) {
     console.log(error);
